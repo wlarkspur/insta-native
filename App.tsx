@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as React from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useAssets } from "expo-asset";
 import LoggedOutNav from "./navigators/LoggedOutNav";
 import { NavigationContainer } from "@react-navigation/native";
+import { Appearance } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -13,7 +14,7 @@ export default function App() {
     require(`./assets/Instagram-name-logo-transparent-PNG.png`),
     "https://image.similarpng.com/very-thumbnail/2020/06/Instagram-name-logo-transparent-PNG.png",
   ]);
-  React.useEffect(() => {
+  useEffect(() => {
     async function prepare() {
       try {
         // Pre-load assets, make any API calls you need to do here
@@ -33,7 +34,10 @@ export default function App() {
   if (loading || !assets) {
     return null; // Show nothing while loading
   }
-
+  const light = Appearance.getColorScheme();
+  const subscription = Appearance.addChangeListener(({ colorScheme }) => {
+    console.log(colorScheme);
+  });
   return (
     <NavigationContainer>
       <LoggedOutNav />
