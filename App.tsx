@@ -5,6 +5,8 @@ import { useAssets } from "expo-asset";
 import LoggedOutNav from "./navigators/LoggedOutNav";
 import { NavigationContainer } from "@react-navigation/native";
 import { Appearance } from "react-native";
+import { ApolloProvider } from "@apollo/client";
+import client from "./apollo";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,8 +41,10 @@ export default function App() {
     console.log(colorScheme);
   });
   return (
-    <NavigationContainer>
-      <LoggedOutNav />
-    </NavigationContainer>
+    <ApolloProvider client={client}>
+      <NavigationContainer>
+        <LoggedOutNav />
+      </NavigationContainer>
+    </ApolloProvider>
   );
 }

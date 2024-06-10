@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 
 const Container = styled.View`
   flex: 1;
-  align-items: center;
+
   justify-content: center;
   background-color: black;
   padding: 0px 40px;
@@ -13,6 +13,7 @@ const Container = styled.View`
 const Logo = styled.Image`
   max-width: 61%;
   height: 114px;
+  align-self: center;
 `;
 
 export default function AuthLayout({ children }: any) {
@@ -20,7 +21,11 @@ export default function AuthLayout({ children }: any) {
     Keyboard.dismiss();
   };
   return (
-    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={dismissKeyboard}>
+    <TouchableWithoutFeedback
+      style={{ flex: 1 }}
+      onPress={dismissKeyboard}
+      disabled={Platform.OS === "web"}
+    >
       <Container>
         <KeyboardAvoidingView
           style={{

@@ -9,6 +9,9 @@ import AuthButton from "../components/auth/AuthButton";
 
 const LoginLink = styled.Text`
   color: ${colors.blue};
+  display: flex;
+  justify-content: center;
+  align-self: center;
   font-weight: 600;
   margin-top: 20px;
 `;
