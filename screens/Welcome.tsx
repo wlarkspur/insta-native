@@ -22,7 +22,7 @@ export default function Welcome({ navigation }: any) {
   return (
     <AuthLayout>
       <AuthButton
-        text="Create Account"
+        text="Create New Account"
         disabled={false}
         onPress={goToCreateAccount}
       />

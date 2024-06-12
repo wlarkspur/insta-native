@@ -5,13 +5,15 @@ import { useAssets } from "expo-asset";
 import LoggedOutNav from "./navigators/LoggedOutNav";
 import { NavigationContainer } from "@react-navigation/native";
 import { Appearance } from "react-native";
-import { ApolloProvider } from "@apollo/client";
-import client from "./apollo";
+import { ApolloProvider, useReactiveVar } from "@apollo/client";
+import client, { isLoggedInVar } from "./apollo";
+import LoggedInNav from "./navigators/LoggedInNav";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [loading, setLoading] = useState(true);
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
   const [assets, error] = useAssets([
     require(`./assets/Instagram-name-logo-transparent-PNG.png`),
     "https://image.similarpng.com/very-thumbnail/2020/06/Instagram-name-logo-transparent-PNG.png",
@@ -40,10 +42,11 @@ export default function App() {
   const subscription = Appearance.addChangeListener(({ colorScheme }) => {
     console.log(colorScheme);
   });
+
   return (
     <ApolloProvider client={client}>
       <NavigationContainer>
-        <LoggedOutNav />
+        {isLoggedIn ? <LoggedInNav /> : <LoggedOutNav />}
       </NavigationContainer>
     </ApolloProvider>
   );
