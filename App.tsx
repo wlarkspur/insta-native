@@ -4,16 +4,24 @@ import * as SplashScreen from "expo-splash-screen";
 import { useAssets } from "expo-asset";
 import LoggedOutNav from "./navigators/LoggedOutNav";
 import { NavigationContainer } from "@react-navigation/native";
-import { Appearance } from "react-native";
 import { ApolloProvider, useReactiveVar } from "@apollo/client";
-import client, { isLoggedInVar } from "./apollo";
+import client, { isLoggedInVar, tokenVar } from "./apollo";
 import LoggedInNav from "./navigators/LoggedInNav";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [loading, setLoading] = useState(true);
   const isLoggedIn = useReactiveVar(isLoggedInVar);
+
+  const preload = async () => {
+    const token: any = await AsyncStorage.getItem("token");
+    if (token) {
+      isLoggedInVar(true);
+      tokenVar(token);
+    }
+  };
   const [assets, error] = useAssets([
     require(`./assets/Instagram-name-logo-transparent-PNG.png`),
     "https://image.similarpng.com/very-thumbnail/2020/06/Instagram-name-logo-transparent-PNG.png",
@@ -21,6 +29,7 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
+        await preload();
         // Pre-load assets, make any API calls you need to do here
         if (assets) {
           // Only proceed when assets are loaded
@@ -38,10 +47,6 @@ export default function App() {
   if (loading || !assets) {
     return null; // Show nothing while loading
   }
-  const light = Appearance.getColorScheme();
-  const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-    console.log(colorScheme);
-  });
 
   return (
     <ApolloProvider client={client}>
