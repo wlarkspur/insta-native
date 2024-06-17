@@ -39,7 +39,7 @@ export default function LogIn({ route: { params } }: any) {
     nextOne?.current?.focus();
   };
   const onValid = (data: any) => {
-    if (!loading) {
+    if (!loading && data) {
       loginMutation({
         variables: {
           ...data,
