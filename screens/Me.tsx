@@ -3,7 +3,7 @@ import AuthButton from "../components/auth/AuthButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { isLoggedInVar, tokenVar } from "../apollo";
 
-export default function Profile() {
+export default function Me() {
   return (
     <>
       <View
@@ -14,7 +14,7 @@ export default function Profile() {
           alignItems: "center",
         }}
       >
-        <Text style={{ color: "white" }}>Someone's Profile</Text>
+        <Text style={{ color: "white" }}>Me</Text>
       </View>
     </>
   );
