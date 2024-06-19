@@ -4,7 +4,7 @@ import Search from "../screens/Search";
 import Notifications from "../screens/Notifications";
 import TabIcon from "../components/nav/TabIcon";
 import Me from "../screens/Me";
-import StackNavFactory from "./StackNavFactory";
+import StackNavFactory from "./SharedStackNav";
 
 const Tabs = createBottomTabNavigator();
 

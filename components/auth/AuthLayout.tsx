@@ -36,7 +36,7 @@ export default function AuthLayout({ children }: any) {
         >
           <Logo
             resizeMode="contain"
-            source={require("../../assets/Instagram-blackwhite.png")}
+            source={require("../../assets/logo.png")}
           />
           {children}
         </KeyboardAvoidingView>

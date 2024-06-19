@@ -1,13 +1,61 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import AuthButton from "../components/auth/AuthButton";
+import { FlatList, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { isLoggedInVar, tokenVar } from "../apollo";
 import { styled } from "styled-components/native";
-const Container = styled.View`
-  flex: 1;
+import { gql, useQuery } from "@apollo/client";
+import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from "../fragments";
+import ScreenLayout from "../components/ScreenLayout";
+
+const FEED_QUERY = gql`
+  query seeFeed {
+    seeFeed {
+      ...PhotoFragment
+      user {
+        username
+        avatar
+      }
+      caption
+      comments {
+        ...CommentFragment
+      }
+      createdAt
+      isMine
+    }
+  }
+  ${PHOTO_FRAGMENT}
+  ${COMMENT_FRAGMENT}
 `;
 
+interface IPhoto {
+  caption: string;
+  commentNumber: number;
+  comments: Comment[];
+  createdAt: string;
+  file: string;
+  id: number;
+  isLiked: boolean;
+  isMine: boolean;
+  likes: number;
+  user: {
+    username: string;
+    avatar: string;
+  };
+}
+
+interface IFeed {
+  seeFeed: IPhoto[];
+}
+
 export default function Feed({ navigation }: any) {
+  const { data, loading } = useQuery<IFeed>(FEED_QUERY);
+  console.log(data);
+  const renderPhoto = ({ item: photo }: { item: IPhoto }) => {
+    return (
+      <View style={{ flex: 1 }}>
+        <Text style={{ color: "white" }}>{photo.caption}</Text>
+      </View>
+    );
+  };
   const logout = async () => {
     try {
       await AsyncStorage.removeItem("token");
@@ -18,20 +66,13 @@ export default function Feed({ navigation }: any) {
     }
   };
   return (
-    <Container>
-      <AuthButton text="Log out" disabled={false} onPress={logout}></AuthButton>
-      <View
-        style={{
-          backgroundColor: "black",
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.navigate("Photo")}>
-          <Text style={{ color: "white" }}>Photo</Text>
-        </TouchableOpacity>
-      </View>
-    </Container>
+    <ScreenLayout loading={loading}>
+      <FlatList
+        data={data?.seeFeed}
+        keyExtractor={(photo) => photo.id + ""}
+        renderItem={renderPhoto}
+      ></FlatList>
+      {/* <Text style={{ color: "white" }}>Loaded</Text> */}
+    </ScreenLayout>
   );
 }

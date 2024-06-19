@@ -5,9 +5,10 @@ import Feed from "../screens/Feed";
 import Search from "../screens/Search";
 import Notifications from "../screens/Notifications";
 import Me from "../screens/Me";
+import { Image } from "react-native";
 
 const Stack = createNativeStackNavigator();
-export default function StackNavFactory({ screenName }: any) {
+export default function SharedStackNav({ screenName }: any) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -19,9 +20,24 @@ export default function StackNavFactory({ screenName }: any) {
       }}
     >
       {screenName === "Feed" ? (
-        <Stack.Screen name="Feed" component={Feed} />
+        <Stack.Screen
+          name="TabFeed"
+          component={Feed}
+          options={{
+            headerTitle: () => (
+              <Image
+                style={{
+                  maxHeight: 40,
+                  width: 100,
+                }}
+                resizeMode="contain"
+                source={require("../assets/logo.png")}
+              />
+            ),
+          }}
+        />
       ) : null}
-      {screenName === "Search" ? (
+      {screenName === "TabSearch" ? (
         <Stack.Screen name="Search" component={Search} />
       ) : null}
       {screenName === "Notifications" ? (
