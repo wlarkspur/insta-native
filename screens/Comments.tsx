@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 
-export default function Profile() {
+export default function Comments() {
   return (
     <>
       <View
@@ -11,7 +11,7 @@ export default function Profile() {
           alignItems: "center",
         }}
       >
-        <Text style={{ color: "white" }}>Someone's Profile</Text>
+        <Text style={{ color: "white" }}>Comments</Text>
       </View>
     </>
   );

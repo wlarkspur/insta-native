@@ -5,6 +5,7 @@ import { styled } from "styled-components/native";
 import { gql, useQuery } from "@apollo/client";
 import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from "../fragments";
 import ScreenLayout from "../components/ScreenLayout";
+import NavPhoto from "../components/NavPhoto";
 
 const FEED_QUERY = gql`
   query seeFeed {
@@ -50,11 +51,7 @@ export default function Feed({ navigation }: any) {
   const { data, loading } = useQuery<IFeed>(FEED_QUERY);
   console.log(data);
   const renderPhoto = ({ item: photo }: { item: IPhoto }) => {
-    return (
-      <View style={{ flex: 1 }}>
-        <Text style={{ color: "white" }}>{photo.caption}</Text>
-      </View>
-    );
+    return <NavPhoto {...photo} />;
   };
   const logout = async () => {
     try {
@@ -68,6 +65,8 @@ export default function Feed({ navigation }: any) {
   return (
     <ScreenLayout loading={loading}>
       <FlatList
+        style={{ width: "100%" }}
+        showsVerticalScrollIndicator={false}
         data={data?.seeFeed}
         keyExtractor={(photo) => photo.id + ""}
         renderItem={renderPhoto}
