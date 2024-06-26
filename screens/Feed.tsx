@@ -6,10 +6,11 @@ import { gql, useQuery } from "@apollo/client";
 import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from "../fragments";
 import ScreenLayout from "../components/ScreenLayout";
 import NavPhoto from "../components/NavPhoto";
+import { useState } from "react";
 
 const FEED_QUERY = gql`
-  query seeFeed {
-    seeFeed {
+  query seeFeed($offset: Int!) {
+    seeFeed(offset: $offset) {
       ...PhotoFragment
       user {
         username
@@ -48,8 +49,12 @@ interface IFeed {
 }
 
 export default function Feed({ navigation }: any) {
-  const { data, loading } = useQuery<IFeed>(FEED_QUERY);
-  console.log(data);
+  const { data, loading, refetch, fetchMore } = useQuery<IFeed>(FEED_QUERY, {
+    variables: {
+      offset: 0,
+    },
+  });
+
   const renderPhoto = ({ item: photo }: { item: IPhoto }) => {
     return <NavPhoto {...photo} />;
   };
@@ -62,13 +67,29 @@ export default function Feed({ navigation }: any) {
       console.log("Failed to log out(delete token from storage", event);
     }
   };
+  const refresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+  const [refreshing, setRefreshing] = useState(false);
   return (
     <ScreenLayout loading={loading}>
       <FlatList
+        onEndReachedThreshold={0.05}
+        onEndReached={() =>
+          fetchMore({
+            variables: {
+              offset: data?.seeFeed.length,
+            },
+          })
+        }
+        refreshing={refreshing}
+        onRefresh={refresh}
         style={{ width: "100%" }}
         showsVerticalScrollIndicator={false}
         data={data?.seeFeed}
-        keyExtractor={(photo) => photo.id + ""}
+        keyExtractor={(photo, index) => `${photo.id}-${index}`}
         renderItem={renderPhoto}
       ></FlatList>
       {/* <Text style={{ color: "white" }}>Loaded</Text> */}
