@@ -40,18 +40,20 @@ const authLink = setContext((_, { headers }) => {
 
 //http://localhost:4000/graphql
 
+export const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        seeFeed: offsetLimitPagination(),
+      },
+    },
+  },
+});
+
 const client = new ApolloClient({
   /* uri: "https://10e8-3-38-227-15.ngrok-free.app/graphql", */
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          seeFeed: offsetLimitPagination(),
-        },
-      },
-    },
-  }),
+  cache,
 });
 
 export default client;
