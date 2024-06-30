@@ -59,7 +59,7 @@ interface IFeedPhoto {
 }
 type RootStackParamList = {
   Profile: undefined;
-  Likes: undefined;
+  Likes: { photoId: number } | undefined;
   Comments: undefined;
 };
 
@@ -119,7 +119,13 @@ export default function NavPhoto({
             <Ionicons name="chatbubble-outline" color="white" size={20} />
           </Action>
         </Actions>
-        <TouchableOpacity onPress={() => navigation.navigate("Likes")}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("Likes", {
+              photoId: id,
+            })
+          }
+        >
           <Likes>{likes === 1 ? "1 like" : `${likes}likes`}</Likes>
         </TouchableOpacity>
         <Caption>
