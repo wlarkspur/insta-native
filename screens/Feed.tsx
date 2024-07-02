@@ -13,6 +13,7 @@ const FEED_QUERY = gql`
     seeFeed(offset: $offset) {
       ...PhotoFragment
       user {
+        id
         username
         avatar
       }
@@ -39,6 +40,7 @@ interface IPhoto {
   isMine: boolean;
   likes: number;
   user: {
+    id: number;
     username: string;
     avatar: string;
   };

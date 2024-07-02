@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components/native";
+import { colors } from "../colors";
+import { useNavigation } from "@react-navigation/native";
 
-const Column = styled.View`
+const Column = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-  padding: 5px 15px;
 `;
 const Avatar = styled.Image`
   width: 40px;
@@ -17,26 +18,49 @@ const Username = styled.Text`
   color: white;
 `;
 
-const Wrapper = styled.View``;
-const FollowBtn = styled.TouchableOpacity``;
-const FollowBtnText = styled.Text``;
+const Wrapper = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
+`;
+const FollowBtn = styled.TouchableOpacity`
+  background-color: ${colors.blue};
+  justify-content: center;
+  padding: 5px 10px;
+  border-radius: 4px;
+`;
+const FollowBtnText = styled.Text`
+  color: white;
+  font-weight: 600;
+`;
 
 interface IUserRow {
+  id: number;
   username: string;
   avatar: string;
   isFollowing: boolean;
   isMe: boolean;
 }
-
+type RootStackParamList = {
+  navigate: any;
+  Profile: {
+    username: string;
+    id: number;
+  };
+  // Other screens in your stack can be defined here
+};
 export default function UserRow({
   avatar,
+  id,
   username,
   isFollowing,
   isMe,
 }: IUserRow) {
+  const navigation = useNavigation<RootStackParamList>();
   return (
     <Wrapper>
-      <Column>
+      <Column onPress={() => navigation.navigate("Profile", { username, id })}>
         <Avatar source={{ uri: avatar }} />
         <Username>{username}</Username>
       </Column>

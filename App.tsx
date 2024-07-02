@@ -8,7 +8,11 @@ import { ApolloProvider, useReactiveVar } from "@apollo/client";
 import client, { cache, isLoggedInVar, tokenVar } from "./apollo";
 import LoggedInNav from "./navigators/LoggedInNav";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AsyncStorageWrapper, persistCache } from "apollo3-cache-persist";
+import {
+  AsyncStorageWrapper,
+  CachePersistor,
+  persistCache,
+} from "apollo3-cache-persist";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -22,10 +26,11 @@ export default function App() {
       isLoggedInVar(true);
       tokenVar(token);
     }
-    await persistCache({
+    const persistor = new CachePersistor({
       cache,
       storage: new AsyncStorageWrapper(AsyncStorage),
     });
+    await persistor.purge();
   };
   const [assets, error] = useAssets([
     require(`./assets/Instagram-name-logo-transparent-PNG.png`),

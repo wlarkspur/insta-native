@@ -49,8 +49,9 @@ const ExtaContainer = styled.View`
 interface IFeedPhoto {
   id: number;
   user: {
+    id: number;
     username: string;
-    avatar: string;
+    avatar?: string;
   };
   file: string;
   caption: string;
@@ -58,7 +59,15 @@ interface IFeedPhoto {
   isLiked: boolean;
 }
 type RootStackParamList = {
-  Profile: undefined;
+  Profile:
+    | {
+        user: {
+          id: number;
+          username: string;
+          avatar?: string;
+        };
+      }
+    | undefined;
   Likes: { photoId: number } | undefined;
   Comments: undefined;
 };
@@ -92,9 +101,18 @@ export default function NavPhoto({
       }
     );
   }, [file]);
+  const goToProfile = () => {
+    navigation.navigate("Profile", {
+      user: {
+        id,
+        username: user.username,
+        avatar: user.avatar,
+      },
+    });
+  };
   return (
     <Container>
-      <Header onPress={() => navigation.navigate("Profile")}>
+      <Header onPress={goToProfile}>
         <UserAvatar resizeMode="cover" source={{ uri: user.avatar }} />
         <Username>{user.username}</Username>
       </Header>
@@ -129,7 +147,7 @@ export default function NavPhoto({
           <Likes>{likes === 1 ? "1 like" : `${likes}likes`}</Likes>
         </TouchableOpacity>
         <Caption>
-          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+          <TouchableOpacity onPress={goToProfile}>
             <Username>{user.username}</Username>
           </TouchableOpacity>
           <CaptionText>{caption}</CaptionText>
