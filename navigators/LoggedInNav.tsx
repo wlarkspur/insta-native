@@ -5,10 +5,13 @@ import Notifications from "../screens/Notifications";
 import TabIcon from "../components/nav/TabIcon";
 import Me from "../screens/Me";
 import StackNavFactory from "./SharedStackNav";
+import useMe from "../hooks/useMe";
+import { Image } from "react-native";
 
 const Tabs = createBottomTabNavigator();
 
 export default function LoggedInNav() {
+  const { data } = useMe();
   return (
     <Tabs.Navigator
       screenOptions={{
@@ -40,7 +43,7 @@ export default function LoggedInNav() {
           ),
         }}
       >
-        {() => <StackNavFactory screenName="Search" />}
+        {() => <StackNavFactory screenName="TabSearch" />}
       </Tabs.Screen>
       <Tabs.Screen
         name="Camera"
@@ -59,17 +62,28 @@ export default function LoggedInNav() {
           ),
         }}
       >
-        {() => <StackNavFactory screenName="Notifications" />}
+        {() => <StackNavFactory screenName="TabNotifications" />}
       </Tabs.Screen>
       <Tabs.Screen
         name="Me"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon iconName={"person"} color={color} focused={focused} />
-          ),
+          tabBarIcon: ({ focused, color, size }) =>
+            data?.me?.avatar ? (
+              <Image
+                source={{ uri: data?.me.avatar }}
+                style={{
+                  height: 20,
+                  width: 20,
+                  borderRadius: 10,
+                  ...(focused && { borderColor: "white", borderWidth: 2 }),
+                }}
+              />
+            ) : (
+              <TabIcon iconName={"person"} color={color} focused={focused} />
+            ),
         }}
       >
-        {() => <StackNavFactory screenName="Me" />}
+        {() => <StackNavFactory screenName="TabMe" />}
       </Tabs.Screen>
     </Tabs.Navigator>
   );

@@ -1,9 +1,17 @@
+import React, { useEffect } from "react";
 import { View, Text } from "react-native";
-import AuthButton from "../components/auth/AuthButton";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { isLoggedInVar, tokenVar } from "../apollo";
+import useMe from "../hooks/useMe";
+import { MeProps } from "../interface";
 
-export default function Me() {
+export default function Me({ navigation }: MeProps) {
+  const { data } = useMe();
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: data?.me?.username,
+    });
+  }, []);
+
   return (
     <>
       <View

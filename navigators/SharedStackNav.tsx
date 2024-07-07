@@ -8,9 +8,14 @@ import Me from "../screens/Me";
 import { Image } from "react-native";
 import Likes from "../screens/Likes";
 import Comments from "../screens/Comments";
+import { RootStackParamList } from "../interface";
 
-const Stack = createNativeStackNavigator();
-export default function SharedStackNav({ screenName }: any) {
+const Stack = createNativeStackNavigator<RootStackParamList>();
+export default function SharedStackNav({
+  screenName,
+}: {
+  screenName: keyof RootStackParamList;
+}) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -40,12 +45,14 @@ export default function SharedStackNav({ screenName }: any) {
         />
       ) : null}
       {screenName === "TabSearch" ? (
-        <Stack.Screen name="Search" component={Search} />
+        <Stack.Screen name="TabSearch" component={Search} />
       ) : null}
-      {screenName === "Notifications" ? (
-        <Stack.Screen name="Notifications" component={Notifications} />
+      {screenName === "TabNotifications" ? (
+        <Stack.Screen name="TabNotifications" component={Notifications} />
       ) : null}
-      {screenName === "Me" ? <Stack.Screen name="Me" component={Me} /> : null}
+      {screenName === "TabMe" ? (
+        <Stack.Screen name="TabMe" component={Me} />
+      ) : null}
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Photo" component={Photo} />
       <Stack.Screen name="Likes" component={Likes} />
