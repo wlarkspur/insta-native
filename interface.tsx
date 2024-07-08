@@ -13,7 +13,7 @@ export type RootStackParamList = {
     username: string;
     avatar?: string;
   };
-  Photo: undefined;
+  Photo: { photoId: number } | undefined;
   Likes: undefined;
   Comments: undefined;
 };

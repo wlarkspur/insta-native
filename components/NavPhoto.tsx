@@ -57,6 +57,7 @@ interface IFeedPhoto {
   caption: string;
   likes: number;
   isLiked: boolean;
+  fullView: any;
 }
 type RootStackParamList = {
   Profile:
@@ -84,6 +85,7 @@ export default function NavPhoto({
   caption,
   likes,
   isLiked,
+  fullView,
 }: IFeedPhoto) {
   const navigation = useNavigation<PhotoNavStackProp>();
   const { width, height } = useWindowDimensions();

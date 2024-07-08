@@ -90,7 +90,13 @@ export default function Search({ navigation }: SearchProps) {
     });
   }, [navigation]);
   const renderItem = ({ item: photo }: any) => (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("Photo", {
+          photoId: photo.id,
+        })
+      }
+    >
       <Image
         source={{ uri: photo.file }}
         style={{ width: width / numColumns, height: 100 }}
