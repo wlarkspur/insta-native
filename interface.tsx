@@ -32,6 +32,10 @@ type SearchNavigationProp = NativeStackNavigationProp<
   "Search"
 >;
 
+export interface SelectPhotoProps {
+  navigation: NavigationProp<any>;
+}
+
 export interface SearchProps {
   navigation: SearchNavigationProp;
 }

@@ -5,7 +5,6 @@ import SelectPhoto from "../screens/SelectPhoto";
 import TakePhoto from "../screens/TakePhoto";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
-import Feed from "../screens/Feed";
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
