@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { colors } from "../colors";
 import { SelectPhotoProps } from "../interface";
+import { StatusBar } from "expo-status-bar";
 
 const Container = styled.View`
   flex: 1;
@@ -118,7 +119,13 @@ export default function SelectPhoto({ navigation }: SelectPhotoProps) {
     }
   };
   const HeaderRight = () => (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("UploadForm", {
+          file: chosenPhoto,
+        })
+      }
+    >
       <HeaderRightText>Next</HeaderRightText>
     </TouchableOpacity>
   );
@@ -167,6 +174,7 @@ export default function SelectPhoto({ navigation }: SelectPhotoProps) {
 
   return (
     <Container>
+      <StatusBar hidden={false} />
       <Top>
         {chosenPhoto ? (
           <Image
