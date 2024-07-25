@@ -136,7 +136,7 @@ export default function SelectPhoto({ navigation }: SelectPhotoProps) {
     navigation.setOptions({
       headerRight: HeaderRight,
     });
-  }, []);
+  }, [chosenPhoto]);
 
   // 사진 선택 함수
   const choosePhoto = (uri: string) => {
