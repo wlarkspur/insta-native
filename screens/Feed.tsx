@@ -58,7 +58,7 @@ export default function Feed({ navigation }: any) {
   });
 
   const renderPhoto = ({ item: photo }: { item: IPhoto }) => {
-    return <NavPhoto {...photo} />;
+    return <NavPhoto fullView={undefined} {...photo} />;
   };
   const logout = async () => {
     try {
