@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { colors } from "../colors";
 import { NavigationProp } from "@react-navigation/native";
 import { gql, useApolloClient, useMutation } from "@apollo/client";
-
+import { StackScreenProps } from "@react-navigation/stack";
 import { FEED_PHOTO_FRAGMENT } from "../fragments";
 import ReactNativeFile from "../ReactNativeFileCustom";
 
@@ -54,7 +54,15 @@ interface IUploadForm {
   navigation: NavigationProp<any>;
 }
 
-export default function UploadForm({ route, navigation }: IUploadForm) {
+type RootStackParamList = {
+  UploadForm: { file: string }; // Define the params for this screen
+  Tabs: undefined;
+  Messages: undefined;
+};
+
+type UploadFormProps = StackScreenProps<RootStackParamList, "UploadForm">;
+
+export default function UploadForm({ route, navigation }: UploadFormProps) {
   const { register, handleSubmit, setValue } = useForm();
 
   const updateUploadPhoto = (cache: any, result: any) => {

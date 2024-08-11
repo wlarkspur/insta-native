@@ -4,7 +4,7 @@ export interface IReactNativeFile {
   type: string;
 }
 
-export default class ReactNativeFile implements ReactNativeFile {
+export default class ReactNativeFile implements IReactNativeFile {
   uri: string;
   name: string;
   type: string;

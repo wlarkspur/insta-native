@@ -5,11 +5,14 @@ import { Ionicons } from "@expo/vector-icons";
 import UploadNav from "./UploadNav";
 import UploadForm from "../screens/UploadForm";
 import { useNavigation } from "@react-navigation/native";
+import MessagesNav from "./MessagesNav";
+import { RootStackParamList } from "../interface";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function LoggedInNav() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
     <Stack.Navigator screenOptions={{ presentation: "modal" }}>
       <Stack.Screen
@@ -41,6 +44,11 @@ export default function LoggedInNav() {
           },
         }}
         component={UploadForm}
+      />
+      <Stack.Screen
+        name="Messages"
+        options={{ headerShown: false }}
+        component={MessagesNav}
       />
     </Stack.Navigator>
   );

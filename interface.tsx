@@ -2,6 +2,10 @@ import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
+  Tabs: undefined;
+  Upload: undefined;
+  UploadForm: { file: string };
+  Messages: undefined;
   TabFeed: undefined;
   TabSearch: undefined;
   Feed: undefined;
