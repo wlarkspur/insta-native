@@ -5,16 +5,18 @@ import DismissKeyboard from "../components/DismissKeyboard";
 import { useForm } from "react-hook-form";
 import { colors } from "../colors";
 import { NavigationProp } from "@react-navigation/native";
-import { gql, useMutation } from "@apollo/client";
-import { FEED_PHOTO } from "../fragments";
+import { gql, useApolloClient, useMutation } from "@apollo/client";
+
+import { FEED_PHOTO_FRAGMENT } from "../fragments";
+import ReactNativeFile from "../ReactNativeFileCustom";
 
 const UPLOAD_PHOTO_MUTATION = gql`
   mutation uploadPhoto($file: Upload!, $caption: String) {
     uploadPhoto(file: $file, caption: $caption) {
-      ...FeedPhoto
+      ...FeedPhotoFragment
     }
   }
-  ${FEED_PHOTO}
+  ${FEED_PHOTO_FRAGMENT}
 `;
 
 const Container = styled.View`
@@ -56,15 +58,23 @@ export default function UploadForm({ route, navigation }: IUploadForm) {
   const { register, handleSubmit, setValue } = useForm();
 
   const updateUploadPhoto = (cache: any, result: any) => {
+    console.log("result 자료값 ", result);
     const {
       data: { uploadPhoto },
     } = result;
     if (uploadPhoto.id) {
+      const newPhotoRef = cache.writeFragment({
+        id: `Photo:${uploadPhoto.id}`,
+        fragment: FEED_PHOTO_FRAGMENT,
+        data: uploadPhoto,
+        fragmentName: "FeedPhotoFragment",
+      });
+
       cache.modify({
         id: `ROOT_QUERY`,
         fields: {
-          seeFeed(prev: any) {
-            return [uploadPhoto, ...prev];
+          seeFeed(prev: any[] = []) {
+            return [newPhotoRef, ...prev];
           },
         },
       });
@@ -79,6 +89,49 @@ export default function UploadForm({ route, navigation }: IUploadForm) {
     }
   );
 
+  /* const onValid = async ({ caption }: any) => {
+    try {
+      const filepath = route.params.file;
+      const response = await fetch(filepath);
+      const blob = await response.blob();
+
+      console.log("blob 값", blob);
+      console.log("response url 값", response.url);
+
+      const file = new File([blob], "photo.heic", {
+        type: blob.type,
+      });
+
+      console.log("File Size:", file.size);
+      console.log("File Type:", file.type);
+      if (blob.size === 0) {
+        console.error("파일이 비어 있습니다.");
+        return;
+      }
+
+      await uploadPhotoMutation({
+        variables: {
+          file, // Pass the file directly,
+          caption,
+        },
+      });
+    } catch (error) {
+      console.error("에러발생", error); // 에러가 발생한 경우 에러를 출력
+    }
+  }; */
+  const onValid = ({ caption }: any) => {
+    const file = new ReactNativeFile({
+      uri: route.params.file,
+      name: `photo.jpg`,
+      type: "image/jpeg",
+    });
+    uploadPhotoMutation({
+      variables: {
+        caption,
+        file,
+      },
+    });
+  };
   const HeaderRight = () => (
     <TouchableOpacity onPress={handleSubmit(onValid)}>
       <HeaderRightText>Next</HeaderRightText>
@@ -88,7 +141,6 @@ export default function UploadForm({ route, navigation }: IUploadForm) {
   const HeaderRightLoading = () => (
     <ActivityIndicator size="small" color="white" style={{ marginRight: 10 }} />
   );
-
   useEffect(() => {
     register("caption");
   }, [register]);
@@ -99,22 +151,6 @@ export default function UploadForm({ route, navigation }: IUploadForm) {
       ...(loading && { headerLeft: () => null }),
     });
   }, [loading]);
-
-  const onValid = ({ caption }: any) => {
-    const file = {
-      uri: route.params.file,
-      name: `photo.jpg`,
-      type: "image/jpeg",
-    };
-
-    uploadPhotoMutation({
-      variables: {
-        caption,
-        file,
-      },
-    });
-  };
-
   return (
     <DismissKeyboard>
       <Container>

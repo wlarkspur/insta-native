@@ -4,6 +4,7 @@ import {
   createHttpLink,
   makeVar,
 } from "@apollo/client";
+
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { offsetLimitPagination } from "@apollo/client/utilities";
@@ -27,10 +28,26 @@ export const logUserOut = async () => {
   tokenVar("null");
 };
 
-const httpLink = createHttpLink({});
+// Custom isExtractableFile function
+interface ExtractableFile {
+  uri: string;
+  name: string;
+  type: string;
+}
+
+// Define the type guard function
+function isExtractableFile(value: any): value is ExtractableFile {
+  return (
+    value &&
+    typeof value.uri === "string" &&
+    typeof value.name === "string" &&
+    typeof value.type === "string"
+  );
+}
 
 const uploadHttpLink = createUploadLink({
-  uri: "https://96e5-3-38-227-15.ngrok-free.app/graphql",
+  uri: "https://fb9d-3-38-227-15.ngrok-free.app/graphql",
+  isExtractableFile,
   /* headers: {
     "Apollo-require-preflight": "true",
   }, */
@@ -40,7 +57,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      token: tokenVar(), //Authorization 자리에 token 있었음!
+      token: tokenVar(),
     },
   };
 });

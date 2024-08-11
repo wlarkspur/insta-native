@@ -1,4 +1,10 @@
-export class ReactNativeFile {
+export interface IReactNativeFile {
+  uri: string;
+  name: string;
+  type: string;
+}
+
+export default class ReactNativeFile implements ReactNativeFile {
   uri: string;
   name: string;
   type: string;

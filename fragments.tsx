@@ -33,8 +33,8 @@ export const USER_FRAGMENT = gql`
   }
 `;
 
-export const FEED_PHOTO = gql`
-  fragment FeedPhoto on Photo {
+export const FEED_PHOTO_FRAGMENT = gql`
+  fragment FeedPhotoFragment on Photo {
     ...PhotoFragment
     user {
       id
@@ -42,7 +42,6 @@ export const FEED_PHOTO = gql`
       avatar
     }
     caption
-
     createdAt
     isMine
   }
