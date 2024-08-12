@@ -29,6 +29,7 @@
     "expo-status-bar": "~1.12.1",
     "graphql": "^15.8.0",
     "graphql-upload-ts": "^2.1.2",
+    "pretty-format": "^29.7.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.51.5",
