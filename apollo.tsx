@@ -46,7 +46,7 @@ function isExtractableFile(value: any): value is ExtractableFile {
 }
 
 const uploadHttpLink = createUploadLink({
-  uri: "https://fb9d-3-38-227-15.ngrok-free.app/graphql",
+  uri: "https://8e7e-91-132-92-31.ngrok-free.app/graphql",
   isExtractableFile, //ReactNativeFile 사용되지 않아 추가 검증 코드가 필요로 하게 되었을 가능성이 큼.
   /* headers: {
     "Apollo-require-preflight": "true",

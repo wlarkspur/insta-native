@@ -2,6 +2,12 @@ import React, { useEffect } from "react";
 import { gql, useQuery, useReactiveVar } from "@apollo/client";
 import { isLoggedInVar, logUserOut } from "../apollo";
 
+interface IUseMe {
+  id: string;
+  username: string;
+  avatar: string;
+}
+
 export const ME_QUERY = gql`
   query me {
     me {
@@ -14,12 +20,12 @@ export const ME_QUERY = gql`
 
 export default function useMe() {
   const hasToken = useReactiveVar(isLoggedInVar);
-  const { data } = useQuery(ME_QUERY, {
+  const { data } = useQuery<IUseMe>(ME_QUERY, {
     skip: !hasToken, // 사용자가 LocalStorage를 통해 로그인한 경우에만 실행
   });
 
   useEffect(() => {
-    if (data?.me === null) {
+    if (data?.id === null) {
       logUserOut();
     }
   }, [data]);
