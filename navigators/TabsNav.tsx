@@ -73,7 +73,7 @@ export default function TabsNav() {
         name="Me"
         options={{
           tabBarIcon: ({ focused, color, size }) =>
-            data?.me?.avatar ? (
+            data?.me.avatar ? (
               <Image
                 source={{ uri: data?.me.avatar }}
                 style={{

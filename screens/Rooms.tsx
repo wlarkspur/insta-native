@@ -1,11 +1,11 @@
 import { gql, useQuery } from "@apollo/client";
 import React from "react";
-import { FlatList, Image, Text, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { ROOM_FRAGMENT } from "../fragments";
-import styled from "styled-components/native";
+
 import ScreenLayout from "../components/ScreenLayout";
-import useMe from "../hooks/useMe";
-import { colors } from "../colors";
+
+import RoomItem from "../components/rooms/RoomItem";
 
 interface IUser {
   avatar: string;
@@ -21,11 +21,6 @@ interface IRoom {
 interface ISeeRooms {
   seeRooms: IRoom[];
 }
-interface IMeData {
-  id: string;
-  username: string;
-  avatar: string;
-}
 
 const SEE_ROOMS_QUERY = gql`
   query seeRooms {
@@ -36,67 +31,9 @@ const SEE_ROOMS_QUERY = gql`
   ${ROOM_FRAGMENT}
 `;
 
-const RoomContainer = styled.TouchableOpacity`
-  background-color: black;
-  padding: 15px 10px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-`;
-const Column = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Avatar = styled.Image`
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
-  margin-right: 20px;
-`;
-const Data = styled.View``;
-const UnreadDot = styled.View`
-  width: 10px;
-  height: 10px;
-  border-radius: 5px;
-  background-color: ${colors.blue};
-`;
-const Username = styled.Text`
-  color: white;
-  font-weight: 600;
-  font-size: 16px;
-`;
-const UnreadText = styled.Text`
-  color: white;
-  margin-top: 2px;
-  font-weight: 400;
-`;
-
 export default function Rooms() {
   const { data, loading } = useQuery<ISeeRooms>(SEE_ROOMS_QUERY);
-  const { data: meData } = useMe() as { data: IMeData };
-
-  const renderItem = ({ item: room }: any) => {
-    const notMe: IMeData = room.users.find(
-      (user: any) => user.username !== meData?.username
-    );
-    return (
-      <RoomContainer>
-        <Column>
-          <Avatar source={{ uri: notMe?.avatar }} />
-          <Data>
-            <Username>{notMe.username}</Username>
-            <UnreadText>
-              {room.unreadTotal === 1 ? "message" : "messages"}
-            </UnreadText>
-          </Data>
-        </Column>
-        <Column>{room.unreadTotal !== 0 ? <UnreadDot /> : null}</Column>
-      </RoomContainer>
-    );
-  };
+  const renderItem = ({ item: room }: any) => <RoomItem {...room} />;
   return (
     <ScreenLayout loading={loading}>
       <FlatList

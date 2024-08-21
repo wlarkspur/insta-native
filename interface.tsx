@@ -1,5 +1,6 @@
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 export type RootStackParamList = {
   Tabs: undefined;
@@ -20,8 +21,17 @@ export type RootStackParamList = {
   Photo: { photoId: number } | undefined;
   Likes: undefined;
   Comments: undefined;
+  Room:
+    | {
+        id: string;
+        talkingTo: { id: string; username: string; avatar: string };
+      }
+    | undefined;
 };
-
+export type RoomScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Room"
+>;
 type ProfileScreenRouteProp = RouteProp<RootStackParamList, "Profile">;
 type ProfileScreenNavigationProp = NavigationProp<
   RootStackParamList,

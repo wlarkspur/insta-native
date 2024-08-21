@@ -3,9 +3,11 @@ import { gql, useQuery, useReactiveVar } from "@apollo/client";
 import { isLoggedInVar, logUserOut } from "../apollo";
 
 interface IUseMe {
-  id: string;
-  username: string;
-  avatar: string;
+  me: {
+    id: string;
+    username: string;
+    avatar: string;
+  };
 }
 
 export const ME_QUERY = gql`
@@ -25,7 +27,7 @@ export default function useMe() {
   });
 
   useEffect(() => {
-    if (data?.id === null) {
+    if (data?.me.id === null) {
       logUserOut();
     }
   }, [data]);

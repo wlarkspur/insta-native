@@ -14,7 +14,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function LoggedInNav() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
-    <Stack.Navigator screenOptions={{ presentation: "modal" }}>
+    <Stack.Navigator screenOptions={{ presentation: "fullScreenModal" }}>
       <Stack.Screen
         name="Tabs"
         options={{ headerShown: false }}
