@@ -29,6 +29,7 @@
     "expo-status-bar": "~1.12.1",
     "graphql": "^15.8.0",
     "graphql-upload-ts": "^2.1.2",
+    "graphql-ws": "^5.16.0",
     "pretty-format": "^29.7.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -42,7 +43,8 @@
     "react-native-screens": "^3.31.1",
     "react-native-tab-view": "^3.5.2",
     "react-native-web": "~0.19.10",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.11",
+    "subscriptions-transport-ws": "^0.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
