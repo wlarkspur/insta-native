@@ -15,7 +15,7 @@ import {
 } from "@apollo/client/utilities";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
-
+import { WebSocketLink } from "@apollo/client/link/ws";
 export const isLoggedInVar = makeVar(false);
 export const tokenVar = makeVar("");
 
@@ -58,14 +58,15 @@ const uploadHttpLink = createUploadLink({
   }, */
 });
 
-const wsLink = new GraphQLWsLink(
-  createClient({
-    url: "ws://c1ed-185-16-137-48.ngrok-free.app/graphql",
-    connectionParams: {
+const wsLink = new WebSocketLink({
+  uri: "wss://c1ed-185-16-137-48.ngrok-free.app/graphql",
+  options: {
+    reconnect: true,
+    connectionParams: () => ({
       token: tokenVar(),
-    },
-  })
-);
+    }),
+  },
+});
 
 const authLink = setContext((_, { headers }) => {
   return {
@@ -92,6 +93,17 @@ export const cache = new InMemoryCache({
     Query: {
       fields: {
         seeFeed: offsetLimitPagination(),
+      },
+    },
+
+    Message: {
+      keyFields: ["id"], // Message 객체를 id로 식별
+      fields: {
+        user: {
+          merge(existing = {}, incoming) {
+            return { ...existing, ...incoming };
+          },
+        },
       },
     },
   },

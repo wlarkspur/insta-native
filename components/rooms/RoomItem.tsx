@@ -70,7 +70,7 @@ type RootStackParamList = {
 type RoomScreenNavigationProp = StackNavigationProp<RootStackParamList, "Room">;
 
 export default function RoomItem({ users, unreadTotal, id }: IRoomItemProps) {
-  const { data: meData } = useMe() as { data: IMeData };
+  const { data: meData } = useMe() as { data: IMeData | undefined };
   const navigation = useNavigation<RoomScreenNavigationProp>();
   const talkingTo: IMeData | undefined = users.find(
     (user: IUser) => user?.username !== meData?.username

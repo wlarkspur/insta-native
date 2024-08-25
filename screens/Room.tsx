@@ -1,11 +1,32 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-import React, { useEffect } from "react";
+import {
+  gql,
+  useApolloClient,
+  useMutation,
+  useQuery,
+  useSubscription,
+} from "@apollo/client";
+import React, { useEffect, useState } from "react";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import ScreenLayout from "../components/ScreenLayout";
 import styled from "styled-components/native";
 import { useForm } from "react-hook-form";
 import useMe from "../hooks/useMe";
 import { Ionicons } from "@expo/vector-icons";
+
+const ROOM_UPDATES = gql`
+  subscription roomUpdates($id: Int!) {
+    roomUpdates(id: $id) {
+      id
+      payload
+      user {
+        id
+        username
+        avatar
+      }
+      read
+    }
+  }
+`;
 
 const SEND_MESSAGE_MUTATION = gql`
   mutation sendMessage($payload: String!, $roomId: Int, $userId: Int) {
@@ -24,6 +45,7 @@ const ROOM_QUERY = gql`
         id
         payload
         user {
+          id
           username
           avatar
         }
@@ -87,7 +109,6 @@ const SendButton = styled.TouchableOpacity`
 
 export default function Room({ route, navigation }: any) {
   const { data: meData } = useMe();
-
   const { register, setValue, handleSubmit, getValues, watch } = useForm();
   const updateSendMessage = (cache: any, result: any) => {
     const {
@@ -104,34 +125,44 @@ export default function Room({ route, navigation }: any) {
         id,
         payload: message,
         user: {
+          id: meData?.me.id,
           username: meData?.me.username,
           avatar: meData?.me.avatar,
         },
         read: true,
         __typename: "Message",
       };
-      const messageFragment = cache.writeFragment({
-        fragment: gql`
-          fragment NewMessage on Message {
-            id
-            payload
-            user {
-              username
-              avatar
+      if (messageObj) {
+        const messageFragment = cache.writeFragment({
+          fragment: gql`
+            fragment NewMessage on Message {
+              id
+              payload
+              user {
+                id
+                username
+                avatar
+              }
+              read
             }
-            read
-          }
-        `,
-        data: messageObj,
-      });
-      cache.modify({
-        id: `Room:${route.params.id}`,
-        fields: {
-          messages(prev: any) {
-            return [...prev, messageFragment];
+          `,
+          data: messageObj,
+        });
+        cache.modify({
+          id: `Room:${route.params.id}`,
+          fields: {
+            messages(prev = []) {
+              const existingMessage = prev.find(
+                (msg: any) => msg.__ref === messageFragment.__ref
+              );
+              if (existingMessage) {
+                return prev;
+              }
+              return [...prev, messageFragment];
+            },
           },
-        },
-      });
+        });
+      }
     }
   };
   const [sendMessageMutation, { loading: sendingMessage }] = useMutation(
@@ -141,11 +172,65 @@ export default function Room({ route, navigation }: any) {
     }
   );
 
-  const { data, loading } = useQuery(ROOM_QUERY, {
+  const { data, loading, subscribeToMore } = useQuery(ROOM_QUERY, {
     variables: {
       id: route?.params?.id,
     },
   });
+  console.log("data", data.seeRoom.messages.length);
+  const client = useApolloClient();
+  const updateQuery = (prevQuery: any, options: any) => {
+    const {
+      subscriptionData: {
+        data: { roomUpdates: message },
+      },
+    } = options;
+
+    if (message.id) {
+      const incomingMessage = client.cache.writeFragment({
+        fragment: gql`
+          fragment NewMessage on Message {
+            id
+            payload
+            user {
+              id
+              username
+              avatar
+            }
+            read
+          }
+        `,
+        data: message,
+      });
+      client.cache.modify({
+        id: `Room:${route.params.id}`,
+        fields: {
+          messages(prev = []) {
+            const existingMessage = prev.find(
+              (aMessage: any) => aMessage.__ref === incomingMessage?.__ref
+            );
+            if (existingMessage) {
+              return prev;
+            }
+            return [...prev, incomingMessage];
+          },
+        },
+      });
+    }
+  };
+  const [subscribed, setSubscribed] = useState(false);
+  useEffect(() => {
+    if (data?.seeRoom && !subscribed) {
+      subscribeToMore({
+        document: ROOM_UPDATES,
+        variables: {
+          id: route?.params?.id,
+        },
+        updateQuery,
+      });
+      setSubscribed(true);
+    }
+  }, [data, subscribed]);
   const onValid = ({ message }: any) => {
     if (!sendingMessage) {
       sendMessageMutation({
@@ -169,17 +254,18 @@ export default function Room({ route, navigation }: any) {
 
   const renderItem = ({ item: message }: any) => (
     <MessageContainer
-      Incoming={message.user.username !== route?.params?.talkingTo?.username}
+      Incoming={message?.user?.username !== route?.params?.talkingTo?.username}
     >
       <Author>
-        <Avatar source={{ uri: message.user.avatar }} />
+        <Avatar source={{ uri: message?.user.avatar }} />
       </Author>
       <MessageBubble>
-        <MessageText>{message.payload}</MessageText>
+        <MessageText>{message?.payload}</MessageText>
       </MessageBubble>
     </MessageContainer>
   );
   const messages = [...(data?.seeRoom?.messages ?? [])];
+
   messages.reverse();
   return (
     <KeyboardAvoidingView
